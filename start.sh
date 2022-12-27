@@ -1,0 +1,1 @@
+docker-compose start workspace php-fpm nginx mysql 
