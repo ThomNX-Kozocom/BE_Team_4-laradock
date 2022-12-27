@@ -2,7 +2,8 @@
 
 ## Build image
 ```
-docker-compose run --build 
+cp .env.example .env
+docker-compose up --build 
 ```
 
 ## Start docker
@@ -18,11 +19,12 @@ docker-compose run --build
 ## Start laravel
 ```bash
 ./laradock-workspace-bash.sh
+cp .env.example .env
 composer install
 php artisan key:generate
 php artisan migrate
 ```
 
 ## APP_URL
-laradock.dev.test
+http://laradock.dev.test
 
