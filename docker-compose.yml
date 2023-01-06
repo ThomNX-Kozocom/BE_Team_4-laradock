@@ -367,17 +367,6 @@ services:
       networks:
         - backend
 
-### Redis ################################################
-    # redis:
-    #   build: ./redis
-    #   volumes:
-    #     - ${DATA_PATH_HOST}/redis:/data
-    #   command: --requirepass ${REDIS_PASSWORD}
-    #   ports:
-    #     - "${REDIS_PORT}:6379"
-    #   networks:
-    #     - backend
-
 ### Docker-in-Docker ################################################
     docker-in-docker:
       image: docker:20.10-dind
@@ -407,6 +396,42 @@ services:
         - "${PMA_PORT}:80"
       depends_on:
         - "${PMA_DB_ENGINE}"
+      networks:
+        - frontend
+        - backend
+
+## Redis #####################################################
+    redis:
+      image: 'redis:alpine'
+      ports:
+        - '6379:6379'
+      networks:
+        - frontend
+
+## web1 #####################################################
+    web1:
+      restart: on-failure
+      build: ./web1
+      working_dir: /var/www
+      volumes:
+        - ${APP_CODE_PATH_HOST_NODEJS}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
+      ports:
+        - '82:5000'
+      networks:
+        - frontend
+        - backend
+
+### NGINX Server 2 #########################################
+    nginx2:
+      build: ./nginx2
+      ports:
+        - '80:80'
+      working_dir: /var/www
+      depends_on:
+        - web1
+      volumes:
+        - ./nginx2/default.conf:/etc/nginx/conf.d/default.conf
+        - ${APP_CODE_PATH_HOST_NODEJS}:${APP_CODE_PATH_CONTAINER}${APP_CODE_CONTAINER_FLAG}
       networks:
         - frontend
         - backend

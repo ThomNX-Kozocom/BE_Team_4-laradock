@@ -1,0 +1,1 @@
+docker-compose stop web1 nginx2 mysql
